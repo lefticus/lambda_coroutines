@@ -37,6 +37,44 @@ int main(int argc, const char **argv)
     std::cout << arg.first << arg.second << std::endl;
   }
 
+    auto fib = [state = 0, fib_2 = 0, fib_1 = 1]() mutable -> int {
+    lambda_co_begin(state);
+
+    lambda_co_yield(0);
+    lambda_co_yield(1);
+
+    while (true) {
+      fib_2 = std::exchange(fib_1, fib_2 + fib_1);
+      lambda_co_yield(fib_1);
+    }
+
+    lambda_co_return(-1);
+  };
+
+  // generates the set of all fibonacci numbers representable by a ull
+  auto fib2 = [state = 0, fib_2 = 0ull,
+               fib_1 = 1ull]() mutable -> std::optional<unsigned long long> {
+    lambda_co_begin(state);
+
+    lambda_co_yield(0);
+    lambda_co_yield(1);
+
+    while (fib_1 < std::numeric_limits<decltype(fib_1)>::max() / 2) {
+      fib_2 = std::exchange(fib_1, fib_2 + fib_1);
+      lambda_co_yield(fib_1);
+    }
+
+    lambda_co_return({});
+  };
+
+  //  for (const auto value : lambda_co_range(fib, 5, 5, 2))
+  //  {
+  //      fmt::print("{}\n", value);
+  //  }
+
+  for (const auto value : lambda_co_while_not_empty(fib2)) {
+    fmt::print("{}\n", value);
+  }
 
   //Use the default logger (stdout, multi-threaded, colored)
   spdlog::info("Hello, {}!", "World");
