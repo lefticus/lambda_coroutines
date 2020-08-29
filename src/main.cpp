@@ -1,29 +1,19 @@
 #include <functional>
 #include <iostream>
 
-#include <spdlog/spdlog.h>
-
-
+#include "lambda_coroutines/lambda_coroutines.hpp"
 #include <docopt/docopt.h>
-
-#include <iostream>
+#include <fmt/format.h>
 
 static constexpr auto USAGE =
-  R"(Naval Fate.
+  R"(Lambda Coroutines Test
+   Usage:
+          lambda_coroutines [options]
 
-    Usage:
-          naval_fate ship new <name>...
-          naval_fate ship <name> move <x> <y> [--speed=<kn>]
-          naval_fate ship shoot <x> <y>
-          naval_fate mine (set|remove) <x> <y> [--moored | --drifting]
-          naval_fate (-h | --help)
-          naval_fate --version
  Options:
           -h --help     Show this screen.
           --version     Show version.
-          --speed=<kn>  Speed in knots [default: 10].
-          --moored      Moored (anchored) mine.
-          --drifting    Drifting mine.
+          --stride=<X>  Stepping between fib numbers [default: 1].
 )";
 
 int main(int argc, const char **argv)
@@ -31,13 +21,13 @@ int main(int argc, const char **argv)
   std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
     { std::next(argv), std::next(argv, argc) },
     true,// show help if requested
-    "Naval Fate 2.0");// version string
+    "Lambda Coroutines 0.1");// version string
 
-  for (auto const &arg : args) {
-    std::cout << arg.first << arg.second << std::endl;
-  }
 
-    auto fib = [state = 0, fib_2 = 0, fib_1 = 1]() mutable -> int {
+  const auto stride = static_cast<std::size_t>(args["--stride"].asLong());
+
+  // generates a new fib each time called, no concern with overflow
+  auto fib = [state = 0, fib_2 = 0u, fib_1 = 1u]() mutable -> unsigned int {
     lambda_co_begin(state);
 
     lambda_co_yield(0);
@@ -48,12 +38,12 @@ int main(int argc, const char **argv)
       lambda_co_yield(fib_1);
     }
 
-    lambda_co_return(-1);
+    lambda_co_return(0);
   };
 
-  // generates the set of all fibonacci numbers representable by a ull
-  auto fib2 = [state = 0, fib_2 = 0ull,
-               fib_1 = 1ull]() mutable -> std::optional<unsigned long long> {
+  // generates the set of all fibonacci numbers representable by a ull, returns
+  // empty optional at end of list
+  auto fib2 = [state = 0, fib_2 = 0ULL, fib_1 = 1ULL]() mutable -> std::optional<unsigned long long> {
     lambda_co_begin(state);
 
     lambda_co_yield(0);
@@ -67,17 +57,13 @@ int main(int argc, const char **argv)
     lambda_co_return({});
   };
 
-  //  for (const auto value : lambda_co_range(fib, 5, 5, 2))
-  //  {
-  //      fmt::print("{}\n", value);
-  //  }
-
-  for (const auto value : lambda_co_while_not_empty(fib2)) {
+  fmt::print("Requested Range of Fib Numbers:\n");
+  for (const auto value : lambda_coroutines::range(fib, 0, 15, stride)) {
     fmt::print("{}\n", value);
   }
 
-  //Use the default logger (stdout, multi-threaded, colored)
-  spdlog::info("Hello, {}!", "World");
-
-  fmt::print("Hello, from {}\n", "{fmt}");
+  fmt::print("All possible Fib numbers representable by 'unsigned long long'");
+  for (const auto value : lambda_coroutines::while_has_value(fib2)) {
+    fmt::print("{}\n", value);
+  }
 }
