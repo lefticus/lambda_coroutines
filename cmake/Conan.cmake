@@ -18,7 +18,7 @@ macro(run_conan)
     ${CONAN_EXTRA_REQUIRES}
     catch2/2.13.0
     docopt.cpp/0.6.3
-    fmt/7.0.3
+    fmt/6.2.0
     OPTIONS
     ${CONAN_EXTRA_OPTIONS}
     BASIC_SETUP
