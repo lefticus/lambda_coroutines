@@ -20,25 +20,14 @@ jobs:
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Install conan
-      shell: bash
-      if: contains( matrix.os , "linux")
-      run: |
-        python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install conan
-        source ~/.profile
 
     - name: Install conan
       shell: bash
-      if: contains(matrix.os, "windows")
       run: |
-        pip install conan
-
-    - name: Install conan
-      shell: bash
-      if: contains(matrix.os, "macos")
-      run: |
-        pip install conan
+        which pip3 && pip3 --version || pip --version
+        which pip3 && pip3 install conan || pip install conan
+        [[ -f ~/.profile ]] && source ~/.profile
+        conan --version
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
@@ -51,7 +40,7 @@ jobs:
       # 
       # We need to source the profile file to make sure conan is in PATH
       run: |
-        source ~/.profile
+        [[ -f ~/.profile ]] && source ~/.profile
         cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.buildtype}}
 
     - name: Build
