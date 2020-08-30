@@ -1,6 +1,9 @@
 #ifndef LAMBDA_COROUTINES_HPP
 #define LAMBDA_COROUTINES_HPP
 
+#include <cstddef>
+#include <optional>
+#include <utility>
 
 // because these are macros we cannot meaningfully use namespaces
 

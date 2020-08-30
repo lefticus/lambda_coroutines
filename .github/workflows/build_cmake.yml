@@ -22,7 +22,7 @@ jobs:
 
     - name: Install conan
       shell: bash
-      if: contains(matrix.os, 'linux')
+      if: contains(matrix.os, 'ubuntu')
       run: |
         python3 -m pip install --upgrade pip setuptools
         python3 -m pip install conan
