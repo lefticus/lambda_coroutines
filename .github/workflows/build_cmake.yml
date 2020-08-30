@@ -22,10 +22,23 @@ jobs:
 
     - name: Install conan
       shell: bash
+      if: contains(${{ matrix.os }}, "linux")
       run: |
         python3 -m pip install --upgrade pip setuptools
         python3 -m pip install conan
         source ~/.profile
+
+    - name: Install conan
+      shell: bash
+      if: contains(${{ matrix.os }}, "windows")
+      run: |
+        pip install conan
+
+    - name: Install conan
+      shell: bash
+      if: contains(${{ matrix.os }}, "macos")
+      run: |
+        pip install conan
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
