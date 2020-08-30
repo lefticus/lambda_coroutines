@@ -2,6 +2,7 @@
 #define LAMBDA_COROUTINES_HPP
 
 #include <cstddef>
+#include <functional>
 #include <optional>
 #include <utility>
 
