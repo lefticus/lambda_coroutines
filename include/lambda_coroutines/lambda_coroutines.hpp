@@ -31,13 +31,17 @@ constexpr void lambda_co_status_check(ParamType &value)
   switch (state_variable) {                                    \
   default:                                                     \
   case 0:
+
 #define lambda_co_return(return_value) \
   }                                    \
   return return_value
+
 #define lambda_co_yield(yield_value)                              \
   coroutine_lambda_internal_state_ref = LAMBDA_CO_CONSTEXPR_LINE; \
   return yield_value;                                             \
   case LAMBDA_CO_CONSTEXPR_LINE:
+
+#define lambda_co_end() }
 
 template<typename Lambda>
 [[nodiscard]] constexpr auto range(

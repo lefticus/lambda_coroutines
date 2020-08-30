@@ -35,7 +35,7 @@ constexpr std::array<unsigned long long, 5> get_first_5()
   return { fib().value(), fib().value(), fib().value(), fib().value(), fib().value() };
 }
 
-TEST_CASE("lambda_coroutines are constexpr capable", "[lambda_coroutines]")
+TEST_CASE("lambda_coroutines are constexpr capable", "[constexpr]")
 {
   STATIC_REQUIRE(get_first_5()[4] == 3ULL);
 }
