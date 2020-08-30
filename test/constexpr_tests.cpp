@@ -1,3 +1,6 @@
+#include <array>
+#include <utility>
+
 #include <catch2/catch.hpp>
 #include "lambda_coroutines/lambda_coroutines.hpp"
 
