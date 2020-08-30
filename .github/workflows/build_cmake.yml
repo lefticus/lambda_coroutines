@@ -32,13 +32,17 @@ jobs:
       shell: bash
       if: contains(matrix.os, 'windows')
       run: |
+        pip --version
         pip install conan
+        conan --version
 
     - name: Install conan
       shell: bash
       if: contains(matrix.os, 'macos')
       run: |
+        pip --version
         pip install conan
+        conan --version
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
@@ -51,7 +55,6 @@ jobs:
       # 
       # We need to source the profile file to make sure conan is in PATH
       run: |
-        source ~/.profile
         cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.buildtype}}
 
     - name: Build
